@@ -3,25 +3,107 @@
 :root{color-scheme:dark;--bg:#090d18;--card:#141f32;--muted:#9aa9c0;--gold:#e9bd62;--line:#2a3b55;--green:#8ed5a5}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#1c2b46 0,transparent 42%),var(--bg);color:#f5f7fc;font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 18px env(safe-area-inset-bottom)}main{max-width:640px;margin:auto;padding:22px 0 40px}.top,.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.logo{font-size:12px;letter-spacing:2px;color:var(--gold);font-weight:900}.pill{font-size:11px;color:var(--green);border:1px solid #315c48;border-radius:20px;padding:7px 10px}.hero{padding:28px 4px 18px}.eyebrow{color:var(--gold);letter-spacing:1px}.hero h1{font-size:34px;line-height:1.08;margin:12px 0}.gold{color:var(--gold)}.muted{color:var(--muted);line-height:1.5}.card{background:linear-gradient(145deg,#18243a,#111a2a);border:1px solid var(--line);border-radius:22px;padding:18px;margin:14px 0}.big{font-size:30px;font-weight:850}.btn{border:0;border-radius:14px;background:var(--gold);color:#17130a;padding:15px 16px;font-weight:850;font-size:16px;width:100%;cursor:pointer}.btn.secondary{background:#243650;color:#f5f7fc;border:1px solid #3b5272}.btn:disabled{opacity:.45}.progress{height:9px;background:#26344b;border-radius:9px;overflow:hidden;margin:13px 0}.progress span{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{background:#101a2b;border:1px solid var(--line);padding:14px;border-radius:16px}.tile b{display:block;margin:7px 0}.tile small{color:var(--muted)}input[type=file]{display:none}.filebtn{display:block;text-align:center;border-radius:14px;background:#243650;color:#f5f7fc;border:1px solid #3b5272;padding:14px;font-weight:800;cursor:pointer}.result{font-size:14px;line-height:1.55;color:#d5deec}.item{border-top:1px solid var(--line);padding:12px 0}.item:first-child{border-top:0}.tag{font-size:11px;color:var(--gold);border:1px solid #725b2f;border-radius:20px;padding:3px 7px}.notice{font-size:12px;color:#b5c1d3;border-left:3px solid var(--gold);padding-left:10px;line-height:1.55}footer{text-align:center;color:#71819a;font-size:11px;margin-top:25px}
 </style></head><body><main>
 <div class="top"><div class="logo">SAIF • UTILITIES</div><div class="pill">PRIVATE · ON DEVICE</div></div>
-<section class="hero"><div class="eyebrow">SMART CLEANUP ASSISTANT</div><h1>Make room.<br><span class="gold">Keep it clean.</span></h1><p class="muted">Scan photos and videos you choose. Find exact duplicate files and large media, then review before deleting.</p></section>
+<section class="hero"><div class="eyebrow">SMART CLEANUP ASSISTANT</div><h1>Make room.<br><span class="gold">Keep it clean.</span></h1><p class="muted">Choose photos and videos from your iPhone. Find exact duplicates and large files, preview them, and decide what you want to remove.</p></section>
 <section class="card"><div class="row"><div><div class="muted">Potential space to review</div><div class="big" id="potential">0 MB</div></div><div class="gold" id="state">READY</div></div><div class="progress"><span id="bar"></span></div><div class="muted" id="status">Choose media, then tap SMART CLEAN.</div><div style="height:14px"></div><label class="filebtn" for="picker">＋ Select photos & videos</label><input id="picker" type="file" accept="image/*,video/*" multiple><div style="height:12px"></div><button class="btn" id="scan">SMART CLEAN · SCAN NOW</button></section>
 <div class="grid"><div class="tile"><div class="gold">▣</div><b>Large media</b><small id="large">Not scanned</small></div><div class="tile"><div class="gold">◇</div><b>Exact duplicates</b><small id="dupes">Not scanned</small></div></div>
-<section class="card"><h3>Scan results</h3><div id="results" class="result">No scan yet. Select your photos/videos first.</div></section>
+<section class="card"><div class="row"><h3>Scan results</h3><button class="btn secondary" id="reset" style="width:auto;padding:9px 12px;font-size:12px">RESET</button></div><div id="results" class="result">No scan yet. Select your photos/videos first.</div></section>
 <section class="card"><h3>How to safely free space</h3><div class="result">1. Review the large media and duplicate groups above.\n2. Open Photos → Albums → Duplicates (if available) to merge duplicates safely.\n3. To remove selected media, open it in Photos and delete it yourself.\n4. Open Photos → Recently Deleted and permanently remove items only if you are certain.</div><div style="height:12px"></div><button class="btn secondary" id="storage">Open iPhone Storage guide</button></section>
-<p class="notice">Privacy & iOS limits: scanning happens in your browser on this device; files are not uploaded. This website cannot delete items from Photos, inspect all your library automatically, clear other apps’ cache/RAM, or clean iOS system files. iOS requires your confirmation for deletion.</p>
-<footer>SAIF CLEANER · SMART SCAN V2</footer></main>
+<p class="notice">Privacy & iOS limits: scanning happens in your browser on this device; files are not uploaded. This website can only scan the photos and videos you manually select. It cannot access your entire library, delete originals from Photos, clear other apps’ cache/RAM, or clean iOS system files. Use Photos to delete items yourself after reviewing them.</p>
+<footer>SAIF CLEANER · SMART SCAN V3</footer></main>
 <script>
-const picker=document.getElementById('picker'),scanBtn=document.getElementById('scan'),results=document.getElementById('results'),potential=document.getElementById('potential'),bar=document.getElementById('bar'),status=document.getElementById('status'),large=document.getElementById('large'),dupes=document.getElementById('dupes'),state=document.getElementById('state');
-let chosen=[];
-const fmt=b=>b>=1073741824?(b/1073741824).toFixed(2)+' GB':b>=1048576?(b/1048576).toFixed(1)+' MB':(b/1024).toFixed(0)+' KB';
-picker.addEventListener('change',()=>{chosen=[...picker.files];status.textContent=chosen.length+' media item(s) selected. Tap SMART CLEAN.';state.textContent='READY';});
-async function digest(file){if(!crypto.subtle)return null;const buf=await file.arrayBuffer();const hash=await crypto.subtle.digest('SHA-256',buf);return [...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,'0')).join('');}
-scanBtn.addEventListener('click',async()=>{if(!chosen.length){status.textContent='First tap “Select photos & videos” and choose some items.';return;}scanBtn.disabled=true;state.textContent='SCANNING';results.textContent='Scanning selected files locally…';let total=0;const hashes=new Map(),duplicates=[],big=[];for(let i=0;i<chosen.length;i++){const f=chosen[i];total+=f.size;status.textContent='Scanning '+(i+1)+' of '+chosen.length+'…';bar.style.width=((i+1)/chosen.length*100)+'%';if(f.size>=100*1048576)big.push(f);try{const h=await digest(f);if(h){if(hashes.has(h))duplicates.push([hashes.get(h),f]);else hashes.set(h,f);}}catch(e){}}
-const dupBytes=duplicates.reduce((s,p)=>s+p[1].size,0),bigBytes=big.reduce((s,f)=>s+f.size,0),recover=dupBytes+bigBytes;potential.textContent=fmt(recover);large.textContent=big.length+' files ≥ 100 MB';dupes.textContent=duplicates.length+' exact duplicate(s)';status.textContent=chosen.length+' item(s) scanned · '+fmt(total)+' total selected';state.textContent='DONE';
-let out='<div class="item"><b>Selected total:</b> '+fmt(total)+'</div><div class="item"><b>Large media (≥100 MB):</b> '+(big.length?big.map(f=>esc(f.name)+' · '+fmt(f.size)).join('<br>'):'None found')+'</div><div class="item"><b>Exact duplicate matches:</b> '+(duplicates.length?duplicates.map(p=>esc(p[0].name)+' / '+esc(p[1].name)+' · '+fmt(p[1].size)+' duplicate copy').join('<br>'):'None found')+'</div><div class="item"><b>Potential review size:</b> '+fmt(recover)+'</div><p class="muted">Large files are suggestions, not automatically safe to delete. Duplicate matches are exact file-content matches.</p>';
-results.innerHTML=out;scanBtn.disabled=false;
+const picker=document.getElementById('picker'),scanBtn=document.getElementById('scan'),
+results=document.getElementById('results'),potential=document.getElementById('potential'),
+bar=document.getElementById('bar'),status=document.getElementById('status'),
+large=document.getElementById('large'),dupes=document.getElementById('dupes'),
+state=document.getElementById('state');
+let chosen=[], largeFiles=[], duplicateFiles=[], objectUrls=[];
+
+const fmt=b=>b>=1073741824?(b/1073741824).toFixed(2)+' GB':
+ b>=1048576?(b/1048576).toFixed(1)+' MB':(b/1024).toFixed(0)+' KB';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function cleanupUrls(){objectUrls.forEach(URL.revokeObjectURL);objectUrls=[];}
+function reset(){
+ cleanupUrls(); chosen=[];largeFiles=[];duplicateFiles=[];picker.value='';
+ potential.textContent='0 MB';bar.style.width='0%';large.textContent='Not scanned';
+ dupes.textContent='Not scanned';state.textContent='READY';
+ status.textContent='Choose media, then tap SMART CLEAN.';
+ results.textContent='No scan yet. Select your photos/videos first.';
+}
+picker.addEventListener('change',()=>{
+ chosen=[...picker.files];
+ status.textContent=chosen.length+' item(s) selected. Tap SMART CLEAN.';
+ state.textContent='READY';
 });
-function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-document.getElementById('storage').onclick=()=>{results.textContent='Go to Settings → General → iPhone Storage. Review recommendations and app sizes there. Choose Offload App to keep its documents and data while removing the app itself.';};
+async function digest(file){
+ if(!crypto.subtle) return null;
+ const buf=await file.arrayBuffer();
+ const hash=await crypto.subtle.digest('SHA-256',buf);
+ return [...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function fileCard(file,kind,index){
+ const url=URL.createObjectURL(file);objectUrls.push(url);
+ const preview=file.type.startsWith('image/')
+  ? `<img src="${url}" alt="" style="width:68px;height:68px;object-fit:cover;border-radius:10px">`
+  : `<video src="${url}" muted playsinline preload="metadata" style="width:68px;height:68px;object-fit:cover;border-radius:10px"></video>`;
+ return `<div class="item" style="display:flex;gap:11px;align-items:center">
+ ${preview}<div style="min-width:0;flex:1"><b style="overflow-wrap:anywhere">${esc(file.name)}</b>
+ <div class="muted">${fmt(file.size)} · ${esc(file.type||'Media file')}</div>
+ <span class="tag">${kind}</span></div>
+ <button class="btn secondary saveone" data-index="${index}" style="width:auto;padding:9px;font-size:12px">SAVE</button></div>`;
+}
+async function saveFile(file){
+ const url=URL.createObjectURL(file);
+ const a=document.createElement('a');a.href=url;a.download=file.name;
+ document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+scanBtn.addEventListener('click',async()=>{
+ if(!chosen.length){status.textContent='First tap “Select photos & videos” and choose some items.';return;}
+ cleanupUrls();scanBtn.disabled=true;state.textContent='SCANNING';
+ results.textContent='Scanning selected files locally…';
+ let total=0;const hashes=new Map();largeFiles=[];duplicateFiles=[];
+ for(let i=0;i<chosen.length;i++){
+  const f=chosen[i];total+=f.size;
+  status.textContent='Scanning '+(i+1)+' of '+chosen.length+'…';
+  bar.style.width=((i+1)/chosen.length*100)+'%';
+  if(f.size>=100*1048576)largeFiles.push(f);
+  try{
+   const h=await digest(f);
+   if(h){if(hashes.has(h))duplicateFiles.push({original:hashes.get(h),copy:f});else hashes.set(h,f);}
+  }catch(e){}
+ }
+ const dupBytes=duplicateFiles.reduce((s,p)=>s+p.copy.size,0);
+ const largeBytes=largeFiles.reduce((s,f)=>s+f.size,0);
+ // Avoid double-counting a large file that is also a duplicate.
+ const duplicateSet=new Set(duplicateFiles.map(p=>p.copy));
+ const uniqueLargeBytes=largeFiles.reduce((s,f)=>s+(duplicateSet.has(f)?0:f.size),0);
+ const recover=dupBytes+uniqueLargeBytes;
+ potential.textContent=fmt(recover);
+ large.textContent=largeFiles.length+' files ≥ 100 MB';
+ dupes.textContent=duplicateFiles.length+' exact duplicate(s)';
+ status.textContent=chosen.length+' item(s) scanned · '+fmt(total)+' selected';
+ state.textContent='DONE';
+
+ let out=`<div class="item"><b>Selected total:</b> ${fmt(total)}</div>`;
+ out+='<h4 class="gold">LARGE MEDIA (100 MB OR MORE)</h4>';
+ out+=largeFiles.length?largeFiles.map((f,i)=>fileCard(f,'LARGE FILE',i)).join(''):'<div class="item">No files over 100 MB found.</div>';
+ out+='<h4 class="gold">EXACT DUPLICATES</h4>';
+ out+=duplicateFiles.length?duplicateFiles.map((p,i)=>fileCard(p.copy,'DUPLICATE COPY',largeFiles.length+i)).join(''):'<div class="item">No exact duplicate files found.</div>';
+ out+=`<div class="item"><b>Potential review size:</b> ${fmt(recover)}</div>
+ <p class="notice">SAVE downloads a copy of the selected file; it does not delete the original from Photos. Review each item in Photos and delete it there if you are sure.</p>`;
+ results.innerHTML=out;
+ results.querySelectorAll('.saveone').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+   const idx=Number(btn.dataset.index);
+   const file=idx<largeFiles.length?largeFiles[idx]:duplicateFiles[idx-largeFiles.length]?.copy;
+   if(file)saveFile(file);
+  });
+ });
+ scanBtn.disabled=false;
+});
+document.getElementById('reset').addEventListener('click',reset);
+document.getElementById('storage').onclick=()=>{
+ results.textContent='Open Settings → General → iPhone Storage. Review Apple’s recommendations and app sizes. Offload App removes the app but keeps its documents and data. To delete photos, use the Photos app and check Recently Deleted.';
+};
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script></body></html>
